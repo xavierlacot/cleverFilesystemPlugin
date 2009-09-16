@@ -74,7 +74,7 @@ class cleverFilesystem
 
   public function __call($name, $arguments)
   {
-    $this->adapter->$name($arguments);
+    return call_user_func_array(array($this->adapter, $name), $arguments);
   }
 
   /**

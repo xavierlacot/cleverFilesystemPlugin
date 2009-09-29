@@ -3,7 +3,7 @@
 class cleverFilesystemFtpAdapter extends cleverFilesystemAdapter
 {
   protected $cache = array();
-  
+
   /**
    * Change remote directory,
    * return true if success,
@@ -24,6 +24,12 @@ class cleverFilesystemFtpAdapter extends cleverFilesystemAdapter
     return true;
   }
 
+  public function chmod($path, $permission)
+  {
+    $this->checkExists($path);
+    return ftp_chmod($this->connection, $permission, $this->root.DIRECTORY_SEPARATOR.$path);
+  }
+
   protected function connect()
   {
     // connect to the ftp
@@ -32,7 +38,7 @@ class cleverFilesystemFtpAdapter extends cleverFilesystemAdapter
     // login the user
     if ($this->connection)
     {
-      $login_result = ftp_login($this->connection, $this->username, $this->password);    
+      $login_result = ftp_login($this->connection, $this->username, $this->password);
     }
 
     // check connection
@@ -40,8 +46,8 @@ class cleverFilesystemFtpAdapter extends cleverFilesystemAdapter
     {
       throw new sfException(sprintf(
 	    '{cleverFilesystemFtpAdapter} FTP connection to host "%s" with username "%s" (password: %s) failed',
-        $this->host, 
-        $this->username, 
+        $this->host,
+        $this->username,
         ($this->password ? 'yes' : 'no')
       ));
       return false;
@@ -59,12 +65,12 @@ class cleverFilesystemFtpAdapter extends cleverFilesystemAdapter
       foreach ($contents as $item_from)
       {
         $item_to = $to.'/'.$item_from;
-        
+
         if ('' != $from)
         {
           $item_from = $from.'/'.$item_from;
         }
-        
+
         $this->copy($item_from, $item_to);
       }
     }
@@ -114,14 +120,14 @@ class cleverFilesystemFtpAdapter extends cleverFilesystemAdapter
       {
         $parent_path = '';
       }
-      
+
       $parent_content = ftp_nlist($this->connection, $parent_path);
       $this->listDir('', array('checkExistence' => false));
     }
     else
     {
       $requested_path = $path;
-      $path = $this->root.DIRECTORY_SEPARATOR.$path; 
+      $path = $this->root.DIRECTORY_SEPARATOR.$path;
       $pos = strrpos($path, DIRECTORY_SEPARATOR);
 
       if ($pos > strlen($this->root) + 1)
@@ -133,7 +139,7 @@ class cleverFilesystemFtpAdapter extends cleverFilesystemAdapter
       {
         $parent_path = '';
       }
-      
+
       $parent_content = $this->listDir($parent_path, array('checkExistence' => false, 'force' => true));
     }
 
@@ -171,7 +177,7 @@ class cleverFilesystemFtpAdapter extends cleverFilesystemAdapter
     {
       ftp_chdir($this->connection, '/');
     }
-    
+
     return $return;
   }
 
@@ -185,9 +191,9 @@ class cleverFilesystemFtpAdapter extends cleverFilesystemAdapter
     if (!isset($options['checkExistence']) || (false !== $options['checkExistence']))
     {
       $this->checkExists($path);
-      $this->checkIsDir($path); 
+      $this->checkIsDir($path);
     }
-    
+
     if (!isset($this->cache[$this->root.DIRECTORY_SEPARATOR.$path])
         || (isset($options['force']) && true === $options['force']))
     {
@@ -203,7 +209,7 @@ class cleverFilesystemFtpAdapter extends cleverFilesystemAdapter
     {
       if ('.' != dirname($path) && '' != dirname($path))
       {
-        $this->mkdir(dirname($path));      
+        $this->mkdir(dirname($path));
       }
 
       if (!ftp_mkdir($this->connection, DIRECTORY_SEPARATOR.$this->root.DIRECTORY_SEPARATOR.$path))
@@ -233,14 +239,14 @@ class cleverFilesystemFtpAdapter extends cleverFilesystemAdapter
   public function rename($from, $to)
   {
     return ftp_rename(
-      $this->connection, 
-      $this->root.DIRECTORY_SEPARATOR.$from, 
+      $this->connection,
+      $this->root.DIRECTORY_SEPARATOR.$from,
       $this->root.DIRECTORY_SEPARATOR.$to
     );
   }
 
   public function unlink($path)
-  { 
+  {
     if ($this->isDir($path))
     {
       $contents = $this->listDir($path, array('checkExistence' => false, 'force' => true));
@@ -267,12 +273,12 @@ class cleverFilesystemFtpAdapter extends cleverFilesystemAdapter
   {
     if (!$this->exists($filepath) || (true === $overwrite))
     {
-      $path = $this->root.DIRECTORY_SEPARATOR.$filepath; 
+      $path = $this->root.DIRECTORY_SEPARATOR.$filepath;
       $tmpfile = tempnam('/tmp', 'cfs');
       file_put_contents($tmpfile, $data);
       ftp_put($this->connection, $path, $tmpfile, FTP_BINARY);
       unlink($tmpfile);
-      
+
       $pos = strrpos($path, DIRECTORY_SEPARATOR);
 
       if ($pos > strlen($this->root) + 1)

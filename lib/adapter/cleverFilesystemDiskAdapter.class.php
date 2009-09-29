@@ -2,6 +2,12 @@
 
 class cleverFilesystemDiskAdapter extends cleverFilesystemAdapter
 {
+  public function chmod($path, $permission)
+  {
+    $this->checkExists($path);
+    return chmod($this->root.DIRECTORY_SEPARATOR.$path, $permission);
+  }
+
   public function copy($from, $to)
   {
     if ($this->isDir($from))
@@ -11,24 +17,37 @@ class cleverFilesystemDiskAdapter extends cleverFilesystemAdapter
       foreach ($contents as $item_from)
       {
         $item_to = $to.'/'.$item_from;
-        
+
         if ('' != $from)
         {
           $item_from = $from.'/'.$item_from;
         }
-        
+
         $this->copy($item_from, $item_to);
       }
     }
     else
     {
       copy($this->root.DIRECTORY_SEPARATOR.$from, $this->root.DIRECTORY_SEPARATOR.$to);
-    }  
+    }
   }
 
   public function exists($path)
   {
     return file_exists($this->root.DIRECTORY_SEPARATOR.$path);
+  }
+
+  public function fileperms($path)
+  {
+    clearstatcache(true, $this->root.DIRECTORY_SEPARATOR.$path);
+    $perms = fileperms($this->root.DIRECTORY_SEPARATOR.$path);
+
+    if (false !== $perms)
+    {
+      $perms = substr(sprintf('%o', $perms), -4);
+    }
+
+    return $perms;
   }
 
   public function getSize($filepath)
@@ -63,9 +82,9 @@ class cleverFilesystemDiskAdapter extends cleverFilesystemAdapter
     {
       if ('' != dirname($path))
       {
-        $this->mkdir(dirname($path));      
+        $this->mkdir(dirname($path));
       }
-      
+
       mkdir($this->root.DIRECTORY_SEPARATOR.$path);
     }
   }
@@ -83,7 +102,7 @@ class cleverFilesystemDiskAdapter extends cleverFilesystemAdapter
 
     return $return;
   }
-  
+
   protected function removeDirsFromList($item)
   {
     return (('.' !== $item) && ('..' !== $item));
@@ -97,7 +116,7 @@ class cleverFilesystemDiskAdapter extends cleverFilesystemAdapter
   public function unlink($path)
   {
     $item = $this->root.DIRECTORY_SEPARATOR.$path;
-    
+
     if (!file_exists($item))
     {
       return true;
@@ -108,7 +127,7 @@ class cleverFilesystemDiskAdapter extends cleverFilesystemAdapter
       foreach (scandir($item) as $entry)
       {
         if ($entry == '.' || $entry == '..') continue;
-        
+
         if (!$this->unlink($path.DIRECTORY_SEPARATOR.$entry))
         {
           chmod($item.DIRECTORY_SEPARATOR.$entry, 0777);
@@ -116,11 +135,11 @@ class cleverFilesystemDiskAdapter extends cleverFilesystemAdapter
         }
       }
 
-      return rmdir($item);      
+      return rmdir($item);
     }
     else
     {
-      return unlink($item);      
+      return unlink($item);
     }
   }
 

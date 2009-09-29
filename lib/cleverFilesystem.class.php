@@ -3,7 +3,7 @@
 class cleverFilesystem
 {
   protected $cache_dir;
-  
+
   public static function getInstance($configuration)
   {
     if (is_string($configuration))
@@ -37,7 +37,7 @@ class cleverFilesystem
         $return = $configuration[$name];
       }
     }
-    
+
     return $return;
   }
 
@@ -66,7 +66,7 @@ class cleverFilesystem
       throw new sfException('The type of a cleverFileSystem might only be a string or a cleverFileSystem instance.');
     }
   }
-  
+
   public function __destruct()
   {
     unset($this);
@@ -100,7 +100,7 @@ class cleverFilesystem
         {
           mkdir($cache_directory);
         }
-        
+
         $directory = dirname($cache_filename);
         $directories = explode(DIRECTORY_SEPARATOR, substr($directory, strlen($cache_directory) + 1));
 
@@ -122,6 +122,11 @@ class cleverFilesystem
     return $cache_filename;
   }
 
+  public function chmod($path, $permission)
+  {
+    return $this->adapter->chmod($path, $permission);
+  }
+
   public function copy($from, $to)
   {
     if ($this->exists($from))
@@ -134,7 +139,7 @@ class cleverFilesystem
       {
         $this->mkdir(dirname($to));
       }
-      
+
       return $this->adapter->copy($from, $to);
     }
     else
@@ -152,7 +157,7 @@ class cleverFilesystem
   {
     return $this->adapter->getSize($filepath);
   }
-  
+
   public function getRoot()
   {
     return $this->options['root'];

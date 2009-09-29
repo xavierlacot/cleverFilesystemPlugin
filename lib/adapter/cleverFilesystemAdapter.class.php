@@ -33,8 +33,19 @@ abstract class cleverFilesystemAdapter
     }
   }
 
+  public function chmod($path, $permission)
+  {
+    return true;
+  }
+
   abstract function copy($from, $to);
   abstract function exists($path);
+
+  public function fileperms($path)
+  {
+    return false;
+  }
+
   abstract function getSize($filepath);
   abstract function isDir($path);
   abstract function isFile($path);

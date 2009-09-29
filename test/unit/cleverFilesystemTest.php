@@ -2,11 +2,11 @@
 $root_dir = '/tmp/cfs_test';
 $filesystems_configs = array(
   'Disk' => array(
-    'root'      => $root_dir, 
+    'root'      => $root_dir,
     'cache_dir' => '/tmp'
   ),
   'Ftp'  => array(
-    'root'      => 'michel_ftp_test', 
+    'root'      => 'michel_ftp_test',
     'cache_dir' => '/tmp',
     'host'      => '127.0.0.1',
     'password'  => 'test',
@@ -19,7 +19,7 @@ $sf_root_dir = realpath(dirname(__FILE__).'/../../../../');
 require_once($sf_root_dir.'/test/bootstrap/unit.php');
 
 // start tests
-$t = new lime_test(30 * count($filesystems_configs), new lime_output_color());
+$t = new lime_test(31 * count($filesystems_configs), new lime_output_color());
 
 exec('rm -Rf '.$root_dir);
 
@@ -107,11 +107,11 @@ foreach ($filesystems_configs as $type => $filesystem_config)
 
   $fs->rename('real/new/sub', 'other/real/new/sub/dir');
   $t->ok(
-    $fs->exists('other/real/new/sub/dir') && !$fs->exists('real/new/sub'), 
+    $fs->exists('other/real/new/sub/dir') && !$fs->exists('real/new/sub'),
     'rename() is able to move a directory, even to a new one created dynamically'
   );
   $t->ok(
-    $fs->exists('other/real/new/sub/dir/dir/new-file.txt') && !$fs->exists('real/new/sub/dir/new-file.txt'), 
+    $fs->exists('other/real/new/sub/dir/dir/new-file.txt') && !$fs->exists('real/new/sub/dir/new-file.txt'),
     'rename() also moves the content of a renamed directory'
   );
 
@@ -123,8 +123,16 @@ foreach ($filesystems_configs as $type => $filesystem_config)
   $before = (true === $fs->exists('real/new/sub/dir/toto.txt'));
   $fs->unlink('real');
   $t->ok($before
-    && (false === $fs->exists('real/new')) 
-    && (false === $fs->exists('real/new/sub/dir/toto.txt')), 
+    && (false === $fs->exists('real/new'))
+    && (false === $fs->exists('real/new/sub/dir/toto.txt')),
     'unlink() remove a directory and its content'
   );
+
+  # chmod() test
+  $fs->write('chmod/test/file.txt', 'This is a simple test file');
+  $before = (false !== $fs->read('chmod/test/file.txt'));
+  $fs->chmod('chmod/test/file.txt', 0222);
+  $perms = $fs->fileperms('chmod/test/file.txt');
+  $after = (false === $perms || '0222' == $perms);
+  $t->ok($before && $after, 'chmod() is able to change file permissions');
 }

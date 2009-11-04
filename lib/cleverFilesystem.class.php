@@ -17,7 +17,7 @@ class cleverFilesystem
     }
     else
     {
-      throw new sfException('The configuration is missing a required key "type".');
+      throw new sfException('cleverFilesystem: The configuration is missing a required key "type".');
     }
   }
 

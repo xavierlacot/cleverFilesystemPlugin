@@ -82,7 +82,7 @@ class cleverFilesystem
    * location of the cache file.
    *
    * @param string $filename  absolute virtual path to the file, eg. dir1/subdir2/file.ext
-   * @return string
+   * @return mixed
    */
   public function cache($filename, $force = false)
   {
@@ -119,13 +119,36 @@ class cleverFilesystem
       }
     }
 
-    return $cache_filename;
+    if (!file_exists($cache_filename))
+    {
+      return false;
+    }
+    else
+    {
+      return $cache_filename;
+    }
   }
 
   public function chmod($path, $permission)
   {
     return $this->adapter->chmod($path, $permission);
   }
+
+  /**
+   * Cleans the local cache for a given file.
+   *
+   * @param string $filename  absolute virtual path to the file, eg. dir1/subdir2/file.ext
+   */
+  public function clean($filename)
+  {
+    $cache_filename = $this->cache_dir.DIRECTORY_SEPARATOR.$filename;
+
+    if (file_exists($cache_filename))
+    {
+      unlink($cache_filename);
+    }
+  }
+
 
   public function copy($from, $to)
   {

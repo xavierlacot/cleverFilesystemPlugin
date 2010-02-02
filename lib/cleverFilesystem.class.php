@@ -2,7 +2,7 @@
 
 class cleverFilesystem
 {
-  protected $cache_dir;
+  protected $cache_dir, $type;
 
   public static function getInstance($configuration)
   {
@@ -45,6 +45,7 @@ class cleverFilesystem
   {
     if (is_string($type))
     {
+      $this->type = $type;
       $filesystem_adapter = sprintf('cleverFilesystem%sAdapter', ucfirst($type));
       $default = array('root' => '', 'cache_dir' => sys_get_temp_dir());
       $this->options = array_merge($default, $options);
@@ -86,47 +87,7 @@ class cleverFilesystem
    */
   public function cache($filename, $force = false)
   {
-    $cache_filename = $this->cache_dir.DIRECTORY_SEPARATOR.$filename;
-
-    if ($force || !file_exists($cache_filename))
-    {
-      $file = $this->read($filename);
-
-      if (!is_null($file))
-      {
-        // create the cache directory, if necessary
-        $cache_directory = $this->cache_dir;
-        if (!file_exists($cache_directory))
-        {
-          mkdir($cache_directory);
-        }
-
-        $directory = dirname($cache_filename);
-        $directories = explode(DIRECTORY_SEPARATOR, substr($directory, strlen($cache_directory) + 1));
-
-        foreach ($directories as $directory)
-        {
-          $cache_directory .= DIRECTORY_SEPARATOR.$directory;
-
-          if (!file_exists($cache_directory))
-          {
-            mkdir($cache_directory);
-          }
-        }
-
-        // save the file in the cache
-        file_put_contents($cache_filename, $file);
-      }
-    }
-
-    if (!file_exists($cache_filename))
-    {
-      return false;
-    }
-    else
-    {
-      return $cache_filename;
-    }
+    return $this->adapter->cache($this->cache_dir, $filename, $force);
   }
 
   public function chmod($path, $permission)
@@ -184,6 +145,11 @@ class cleverFilesystem
   public function getRoot()
   {
     return $this->options['root'];
+  }
+
+  public function getType()
+  {
+    return $this->type;
   }
 
   public function isDir($path)

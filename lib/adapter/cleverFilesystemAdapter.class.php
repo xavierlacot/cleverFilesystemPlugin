@@ -9,6 +9,51 @@ abstract class cleverFilesystemAdapter
     $this->initialize($options);
   }
 
+  public function cache($cache_dir, $filename, $force)
+  {
+    $cache_filename = $cache_dir.DIRECTORY_SEPARATOR.$filename;
+
+    if ($force || !file_exists($cache_filename))
+    {
+      $file = $this->read($filename);
+
+      if (!is_null($file))
+      {
+        // create the cache directory, if necessary
+        $cache_directory = $cache_dir;
+        if (!file_exists($cache_directory))
+        {
+          mkdir($cache_directory);
+        }
+
+        $directory = dirname($cache_filename);
+        $directories = explode(DIRECTORY_SEPARATOR, substr($directory, strlen($cache_directory) + 1));
+
+        foreach ($directories as $directory)
+        {
+          $cache_directory .= DIRECTORY_SEPARATOR.$directory;
+
+          if (!file_exists($cache_directory))
+          {
+            mkdir($cache_directory);
+          }
+        }
+
+        // save the file in the cache
+        file_put_contents($cache_filename, $file);
+      }
+    }
+
+    if (!file_exists($cache_filename))
+    {
+      return false;
+    }
+    else
+    {
+      return $cache_filename;
+    }
+  }
+
   protected function checkIsDir($path)
   {
     if (!$this->isDir($path))

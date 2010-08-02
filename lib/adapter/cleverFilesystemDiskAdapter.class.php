@@ -123,7 +123,7 @@ class cleverFilesystemDiskAdapter extends cleverFilesystemAdapter
   {
     if (!$this->exists($path))
     {
-      if ('' != dirname($path))
+      if ('' != dirname($path) && $path != dirname($path))
       {
         $this->mkdir(dirname($path));
       }

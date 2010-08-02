@@ -141,6 +141,7 @@ class cleverFilesystemFtpAdapter extends cleverFilesystemAdapter
       }
 
       $parent_content = $this->listDir($parent_path, array('checkExistence' => false, 'force' => true));
+      $parent_content = $parent_content ? $parent_content : array();
     }
 
     $result = ('' === $path) || in_array($requested_path, $parent_content);
@@ -205,7 +206,7 @@ class cleverFilesystemFtpAdapter extends cleverFilesystemAdapter
 
   public function mkdir($path)
   {
-    if (!$this->exists($path))
+    if (!$this->exists($path) && $path != '.' && $path != '')
     {
       if ('.' != dirname($path) && '' != dirname($path))
       {
@@ -290,7 +291,7 @@ class cleverFilesystemFtpAdapter extends cleverFilesystemAdapter
         $parent_path = '';
       }
 
-      $this->listDir($parent_path, array('force' => true));
+      $this->listDir($parent_path, array('force' => true, 'checkExistence' => false));
     }
     else
     {

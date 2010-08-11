@@ -188,6 +188,13 @@ class cleverFilesystemDiskAdapter extends cleverFilesystemAdapter
 
   public function write($filepath, $data, $overwrite = true)
   {
-    file_put_contents($this->root.DIRECTORY_SEPARATOR.$filepath, $data);
+    if (!$this->exists($filepath) || (true === $overwrite))
+    {
+      file_put_contents($this->root.DIRECTORY_SEPARATOR.$filepath, $data);
+    }
+    else
+    {
+     throw new sfException(sprintf('The file "%s" exists, and can not be overwritten.', $filepath));
+    }
   }
 }

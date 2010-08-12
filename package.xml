@@ -20,11 +20,11 @@ It currently features:
   <email>xavier@lacot.org</email>
   <active>yes</active>
  </lead>
- <date>2009-08-13</date>
+ <date>2010-08-13</date>
  <time>00:35:23</time>
  <version>
-  <release>0.2</release>
-  <api>0.2</api>
+  <release>0.2.0</release>
+  <api>0.2.0</api>
  </version>
  <stability>
   <release>beta</release>
@@ -68,8 +68,8 @@ It currently features:
  <changelog>
   <release>
    <version>
-    <release>0.1</release>
-    <api>0.1</api>
+    <release>0.1.0</release>
+    <api>0.1.0</api>
    </version>
    <stability>
     <release>alpha</release>
@@ -87,14 +87,14 @@ It currently features:
   </release>
   <release>
    <version>
-    <release>0.2</release>
-    <api>0.2</api>
+    <release>0.2.0</release>
+    <api>0.2.0</api>
    </version>
    <stability>
     <release>beta</release>
     <api>beta</api>
    </stability>
-   <date>2009-08-13</date>
+   <date>2010-08-13</date>
    <license uri="http://www.opensource.org/licenses/mit-license.html">MIT</license>
    <notes>
 * lots of fixes, which helped improve a lot the overall stability.

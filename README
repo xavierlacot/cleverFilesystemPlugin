@@ -81,6 +81,13 @@ You may also directly create a file. If the containing directory does not exist,
     $fs->write('path/to/a/non/existant/dir/toto.txt', 'Hello, here is toto');
 
 
+In the case of long file contents, you may want to pass a stream as the second parameter:
+
+    <?php
+    $long_file = fopen('/path/to/a/long/file', 'r');
+    $fs->write('subdir/destination.txt', $long_file);
+
+
 ### Copy a file within the filesystem
 
 The plugin offers the possibility to copy a file within the filesystem. For some filesystem types which depend on limited protocols, like FTP, this will mean downloading the file/directory for uploading it in its new location:
@@ -130,6 +137,10 @@ The tests check the validity of the provided adapters, for each of the proposed 
 This plugin has been developed by [Xavier Lacot](http://lacot.org/) / [Clever Age](http://www.clever-age.com/) and is licensed under the MIT license.
 
 ## Changelog
+
+### version 0.2 - 2009-08-13
+
+Lots of fixes, which helped improve a lot the overall stability.
 
 ### version 0.1 - 2009-09-14
 

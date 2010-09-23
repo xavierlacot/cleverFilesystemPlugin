@@ -4,45 +4,7 @@ class cleverFilesystemDiskAdapter extends cleverFilesystemAdapter
 {
   public function cache($cache_dir, $filename, $force)
   {
-    $cache_filename = $cache_dir.DIRECTORY_SEPARATOR.$filename;
-
-    if (($force || !file_exists($cache_filename))
-        && $this->exists($filename)
-        && $this->isFile($filename)
-        )
-    {
-      // create the cache directory, if necessary
-      $cache_directory = $cache_dir;
-      if (!file_exists($cache_directory))
-      {
-        mkdir($cache_directory);
-      }
-
-      $directory = dirname($cache_filename);
-      $directories = explode(DIRECTORY_SEPARATOR, substr($directory, strlen($cache_directory) + 1));
-
-      foreach ($directories as $directory)
-      {
-        $cache_directory .= DIRECTORY_SEPARATOR.$directory;
-
-        if (!file_exists($cache_directory))
-        {
-          mkdir($cache_directory);
-        }
-      }
-
-      // save the file in the cache
-      copy($this->root.DIRECTORY_SEPARATOR.$filename, $cache_filename);
-    }
-
-    if (!file_exists($cache_filename))
-    {
-      return false;
-    }
-    else
-    {
-      return $cache_filename;
-    }
+    return $this->root.DIRECTORY_SEPARATOR.$filename;
   }
 
   public function chmod($path, $permission)

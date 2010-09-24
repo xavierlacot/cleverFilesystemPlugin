@@ -138,6 +138,12 @@ This plugin has been developed by [Xavier Lacot](http://lacot.org/) / [Clever Ag
 
 ## Changelog
 
+### version 0.3 - 2010-09-24
+
+ * optimized caching when using the disk filesystem type
+ * added a check before overwriting a file
+ * in the case of a local disk filesystem, the cache method now returns the original filename, as caching is useless
+
 ### version 0.2 - 2009-08-13
 
 Lots of fixes, which helped improve a lot the overall stability.

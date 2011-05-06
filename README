@@ -1,0 +1,188 @@
+# cleverFilesystemPlugin
+
+## Introduction
+
+This plugin permits to have an abstract access to the filesystem, whatever its
+type. The plugin currently supports the traditionnal "disk" filesystem and FTP
+servers, and provides an easy way to add support for additional file storage
+systems (FTP, etc.).
+
+This plugin is particularly useful for applications that manage files (a media
+library, a file upload, etc.), as it provides an easy way to abstract the
+access to the filesystem. Relocating the files to a new file storage system
+during the life of the application is made a lot easier, as it only consists
+in using or writing a new filesystem adapter.
+
+## Features
+
+  * filesystem access abstraction
+  * supports Symfony 1.2
+  * ORM agnostic
+  * available adapters : disk, ftp
+  * unit tests
+
+## How to installed
+
+  * go to your project's root
+
+  * Install the plugin:
+
+         ./symfony plugin:install http://plugins.symfony-project.com/cleverFilesystemPlugin
+
+
+  * clear cache:
+
+         ./symfony cc
+
+
+## Usage
+
+### Attaching a filesystem
+
+Attaching a filesystem is a similar operation to mounting a filesystem on your
+operating system.
+
+
+    <?php
+    // create a "disk" filesystem, locally cached in the /tmp directory
+    $fs = new cleverFilesystem('Disk', array('root' => '', 'cache_dir' => '/tmp'));
+
+
+You may also attach a filesystem only by using a configuration defined in the
+`app.yml` file:
+
+
+    all:
+		  cleverFilesystemPlugin:
+		    filesystems:
+		      ftpserver:
+		        type:           ftp
+		        root:           test_de_serveur_ftp
+		        host:           localhost
+		        username:       michel
+		        password:       test
+		        passive:        true
+		        cache_dir:      /tmp
+		      localdisk:
+		        type:           disk
+		        root:           /path/to/my/project/media
+
+
+This can be achieved with a very simple call:
+
+
+    <?php
+    $fs = cleverFilesystem::getInstance('localdisk');
+
+
+### Create a file or a directory
+
+
+    <?php
+    $fs->mkdir('subdir');
+    $fs->write('subdir/toto.txt', 'Hello, here is toto');
+
+
+You may also directly create a file. If the containing directory does not
+exist, it will be created automatically:
+
+
+    <?php
+    $fs->write('path/to/a/non/existant/dir/toto.txt', 'Hello, here is toto');
+
+
+In the case of long file contents, you may want to pass a stream as the second
+parameter:
+
+
+    <?php
+    $long_file = fopen('/path/to/a/long/file', 'r');
+    $fs->write('subdir/destination.txt', $long_file);
+
+
+Some options allow to restrict overwrites, and allow appending to an existing
+file. Here is the prototype of the write method:
+
+
+    <?php
+    public function write($filepath, $data, $overwrite = true, $append = false)
+
+
+### Copy a file within the filesystem
+
+The plugin offers the possibility to copy a file within the filesystem. For
+some filesystem types which depend on limited protocols, like FTP, this will
+mean downloading the file/directory for uploading it in its new location:
+
+
+    <?php
+    $fs->copy('subdir/toto.txt', 'an_other_dir/toto.txt');
+    $fs->copy('subdir', 'path/to/a/non/existing/new/dir');
+
+
+### Delete a file or a directory
+
+
+    <?php
+    $fs->unlink('this/is/a/sub/dir/new-file.txt');
+    $fs->unlink('directory');
+
+
+## Filesystem verification task
+
+The plugin bundles a task which allows to check the validity of the definition
+of a filesystem in the app.yml file. For instance:
+
+
+    $ ./symfony filesystem:check frontend localdisk
+
+
+The task will either explain "The filesystem seems to be valid." or "The
+filesystem "localdisk" does not seem to be reachable.".
+
+## Run tests
+
+The tests check the validity of the provided adapters, for each of the
+proposed methods. In order to successfully run the tests, please edit the
+first few lines of the file `plugins/cleverFilesystemPlugin/test/unit/cleverFilesystemTest.php`,
+in order to use your own parameters. Then, run the following command from your
+project's root directory:
+
+
+    $ php plugins/cleverFilesystemPlugin/test/unit/cleverFilesystemTest.php
+
+
+## Whishlist
+ * SVN filesystem adapter
+ * Database filesystem adapter
+ * Amazon S3 filesystem adapter
+ * file creation / deletion hooks and events
+ * more tests!
+ * performance improvements
+
+## License and credits
+
+This plugin has been developed by [Xavier Lacot](http://lacot.org/) and is
+licensed under the MIT license.
+
+## Changelog
+
+### trunk
+
+ * added passive mode capacity for FTP filesystems
+ * added capacity to append content to existing files
+
+### version 0.3 - 2010-09-24
+
+ * optimized caching when using the disk filesystem type
+ * added a check before overwriting a file
+ * in the case of a local disk filesystem, the cache method now returns the original filename, as caching is useless
+
+### version 0.2 - 2009-08-13
+
+Lots of fixes, which helped improve a lot the overall stability.
+
+### version 0.1 - 2009-09-14
+
+Initial public release. Features filesystem access abstraction, and supports
+Disk and FTP filesystems.

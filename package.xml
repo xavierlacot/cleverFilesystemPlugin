@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.9.0" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0     http://pear.php.net/dtd/tasks-1.0.xsd     http://pear.php.net/dtd/package-2.0     http://pear.php.net/dtd/package-2.0.xsd">
+ <name>cleverFilesystemPlugin</name>
+ <channel>pear.symfony-project.com</channel>
+ <summary>This plugin permits to have an abstract access to the filesystem, whatever its type</summary>
+ <description>This plugin permits to have an abstract access to the filesystem, whatever its type. The plugin currently supports the traditionnal &quot;disk&quot; filesystem and FTP servers, and provides an easy way to add support for additional file storage systems (FTP, etc.).
+
+This plugin is particularly useful for applications that manage files (a media library, a file upload, etc.), as it provides an easy way to abstract the access to the filesystem. Relocating the files to a new file storage system during the life of the application is made a lot easier, as it only consists in using or writing a new filesystem adapter.
+
+It currently features:
+
+  * filesystem access abstraction
+  * supports Symfony 1.2 -> 1.4
+  * ORM agnostic
+  * available adapters : disk, ftp
+  * unit tests</description>
+ <lead>
+  <name>Xavier Lacot</name>
+  <user>xavier</user>
+  <email>xavier@lacot.org</email>
+  <active>yes</active>
+ </lead>
+ <date>2010-09-24</date>
+ <time>05:06:29</time>
+ <version>
+  <release>0.3.0</release>
+  <api>0.3.0</api>
+ </version>
+ <stability>
+  <release>beta</release>
+  <api>beta</api>
+ </stability>
+ <license uri="http://www.opensource.org/licenses/mit-license.html">MIT</license>
+ <notes>
+* optimized caching when using the disk filesystem type
+* added a check before overwriting a file
+* in the case of a local disk filesystem, the cache method now returns the original filename, as caching is useless
+ </notes>
+ <contents>
+  <dir baseinstalldir="." name="/">
+   <file baseinstalldir="." md5sum="9454dad56b2950d9ac87c1310df91e22" name="lib/cleverFilesystem.class.php" role="php" />
+   <file baseinstalldir="." md5sum="b14860efbe14ba1f9489a2be8dbd4c89" name="lib/adapter/cleverFilesystemAdapter.class.php" role="php" />
+   <file baseinstalldir="." md5sum="b00dc1a62af0df1de5b8eedebeb3b9b1" name="lib/adapter/cleverFilesystemDiskAdapter.class.php" role="php" />
+   <file baseinstalldir="." md5sum="5e375317c9486985b593614d313e53f3" name="lib/adapter/cleverFilesystemFtpAdapter.class.php" role="php" />
+   <file baseinstalldir="." md5sum="c9c0dbf180f360bdd66c8f8389aa677e" name="lib/task/cleverFilesystemCheckTask.class.php" role="php" />
+   <file baseinstalldir="." md5sum="db687b23c0e4214d46afeff9cf8b90c7" name="test/unit/cleverFilesystemTest.php" role="php" />
+   <file baseinstalldir="." md5sum="cf2b0b9f4ac1971d58e88332a7f48723" name="LICENSE" role="data" />
+   <file baseinstalldir="." md5sum="ef6b03080b65786dd1eef6536e58f5bd" name="README" role="data" />
+  </dir>
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>5.2.0</min>
+   </php>
+   <pearinstaller>
+    <min>1.4.1</min>
+   </pearinstaller>
+   <package>
+    <name>symfony</name>
+    <channel>pear.symfony-project.com</channel>
+    <min>1.2.0</min>
+    <max>2.0.0</max>
+    <exclude>2.0.0</exclude>
+   </package>
+  </required>
+ </dependencies>
+ <phprelease />
+ <changelog>
+  <release>
+   <version>
+    <release>0.1.0</release>
+    <api>0.1.0</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2009-09-14</date>
+   <license uri="http://www.opensource.org/licenses/mit-license.html">MIT</license>
+   <notes>
+* filesystem access abstraction
+* supports symfony 1.2
+* ORM agnostic
+* available adapters : disk, ftp
+* unit tests
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>0.2.0</release>
+    <api>0.2.0</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>beta</api>
+   </stability>
+   <date>2010-08-13</date>
+   <license uri="http://www.opensource.org/licenses/mit-license.html">MIT</license>
+   <notes>
+* lots of fixes, which helped improve a lot the overall stability.
+* supports symfony 1.2, 1.3, 1.4
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>0.3.0</release>
+    <api>0.3.0</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>beta</api>
+   </stability>
+   <date>2010-09-24</date>
+   <license uri="http://www.opensource.org/licenses/mit-license.html">MIT</license>
+   <notes>
+* optimized caching when using the disk filesystem type
+* added a check before overwriting a file
+* in the case of a local disk filesystem, the cache method now returns the original filename, as caching is useless
+   </notes>
+  </release>
+ </changelog>
+</package>
